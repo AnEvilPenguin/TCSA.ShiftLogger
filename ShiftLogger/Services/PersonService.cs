@@ -9,7 +9,7 @@ public interface IPersonService
     public List<Person> GetPeople();
     public Person? GetPersonById(int id, bool includeShifts = false);
     public Person CreatePerson(Person person);
-    public Person? UpdatePerson(Person person);
+    public Person? UpdatePerson(int id, Person person);
     public string? DeletePerson(int id);
 }
 
@@ -43,9 +43,9 @@ public class PersonService : IPersonService
         return savedPerson.Entity;
     }
 
-    public Person? UpdatePerson(Person person)
+    public Person? UpdatePerson(int id, Person person)
     {
-        Person? savedPerson = GetPersonById(person.Id);
+        Person? savedPerson = GetPersonById(id);
 
         if (savedPerson == null)
         {
