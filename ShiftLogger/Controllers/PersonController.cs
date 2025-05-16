@@ -9,7 +9,7 @@ namespace ShiftLogger.Controllers;
 public class PersonController : ControllerBase
 {
     private readonly IPersonService _personService;
-    
+
     public PersonController(IPersonService personService)
     {
         _personService = personService;
@@ -20,18 +20,37 @@ public class PersonController : ControllerBase
     {
         return Ok(_personService.GetPeople());
     }
-    
+
     [HttpGet("{id:int}")]
     public ActionResult<Person> GetPersonById(int id)
     {
         return Ok(_personService.GetPersonById(id));
     }
 
-    [HttpGet("{id:int}")]
-    public ActionResult<Person> GetPersonShifts(int id)
+    [HttpGet("{id:int}/shifts")]
+    public ActionResult<PersonShiftDTO>? GetPersonShifts(int id)
     {
-        throw new NotImplementedException();
-        // FIXME some sort of DTO
+        var result = _personService.GetPersonById(id, true);
+
+        if (result == null)
+            return null;
+
+        var shifts = result.Shifts.Select(s => new ShiftTransfer()
+        {
+            Id = s.Id,
+            Start = s.Start,
+            End = s.End
+        });
+
+        var output = new PersonShiftDTO()
+        {
+            Id = result.Id,
+            FirstName = result.FirstName,
+            LastName = result.LastName,
+            Shifts = shifts
+        };
+
+        return Ok(output);
     }
 
     [HttpPost]
@@ -49,7 +68,7 @@ public class PersonController : ControllerBase
         {
             return NotFound();
         }
-        
+
         return Ok(result);
     }
 
