@@ -9,7 +9,7 @@ public interface IPersonService
     public List<Person> GetPeople();
     public Person? GetPersonById(int id, bool includeShifts = false);
     public Person CreatePerson(Person person);
-    public Person? UpdatePerson(int id, Person person);
+    public Person? UpdatePerson(int id, PersonNameOnly person);
     public string? DeletePerson(int id);
 }
 
@@ -27,10 +27,20 @@ public class PersonService : IPersonService
 
     public Person? GetPersonById(int id, bool includeShifts = false)
     {
-        if  (includeShifts)
-            return _dbContext.People
-                .Include(p => p.Shifts)
-                .Single(p => p.Id == id);
+        if (includeShifts)
+        {
+            try
+            {
+                return _dbContext.People
+                    .Include(p => p.Shifts)
+                    .Single(p => p.Id == id);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+            
 
         return _dbContext.People.Find(id);
     }
@@ -43,14 +53,12 @@ public class PersonService : IPersonService
         return savedPerson.Entity;
     }
 
-    public Person? UpdatePerson(int id, Person person)
+    public Person? UpdatePerson(int id, PersonNameOnly person)
     {
         Person? savedPerson = GetPersonById(id);
 
         if (savedPerson == null)
-        {
             return null;
-        }
         
         _dbContext.Entry(savedPerson).CurrentValues.SetValues(person);
         _dbContext.SaveChanges();
@@ -63,9 +71,7 @@ public class PersonService : IPersonService
         Person? savedPerson = GetPersonById(id, true);
         
         if (savedPerson == null)
-        {
             return null;
-        }
 
         foreach (var shift in savedPerson.Shifts)
         {

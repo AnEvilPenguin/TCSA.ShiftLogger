@@ -8,7 +8,7 @@ public interface IShiftService
     public List<Shift> GetShifts();
     public Shift? GetShiftById(int id);
     public Shift CreateShift(Shift shift);
-    public Shift? UpdateShift(int id, Shift shift);
+    public Shift? UpdateShift(int id, ShiftCreate shift);
     public string? DeleteShift(int id);
 }
 
@@ -34,14 +34,12 @@ public class ShiftService : IShiftService
         return savedShift.Entity;
     }
 
-    public Shift? UpdateShift(int id, Shift shift)
+    public Shift? UpdateShift(int id, ShiftCreate shift)
     {
-        Shift? savedShift = GetShiftById(shift.Id);
+        Shift? savedShift = GetShiftById(id);
 
         if (savedShift == null)
-        {
             return null;
-        }
         
         _dbContext.Entry(savedShift).CurrentValues.SetValues(shift);
         _dbContext.SaveChanges();
@@ -54,9 +52,7 @@ public class ShiftService : IShiftService
         Shift? shift = GetShiftById(id);
 
         if (shift == null)
-        {
             return null;
-        }
         
         _dbContext.Shifts.Remove(shift);
         _dbContext.SaveChanges();

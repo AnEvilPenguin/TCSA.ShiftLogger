@@ -16,9 +16,9 @@ public class PersonController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<List<Person>> GetAllPeople()
+    public ActionResult<IEnumerable<PersonDto>> GetAllPeople()
     {
-        return Ok(_personService.GetPeople());
+        return Ok(_personService.GetPeople().Select(p => p.ToDto()));
     }
 
     [HttpGet("{id:int}")]
@@ -33,7 +33,7 @@ public class PersonController : ControllerBase
         var result = _personService.GetPersonById(id, true);
 
         if (result == null)
-            return null;
+            return NotFound();
 
         var shifts = result.Shifts.Select(s => new ShiftTransfer()
         {
@@ -54,13 +54,14 @@ public class PersonController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<Person> CreatePerson(Person person)
+    public ActionResult<PersonDto> CreatePerson(PersonNameOnly dto)
     {
-        return Ok(_personService.CreatePerson(person));
+        var savedPerson = _personService.CreatePerson(dto.ToPerson());
+        return Ok(savedPerson.ToDto());
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult<Person> UpdatePerson(int id, Person person)
+    public ActionResult<PersonDto> UpdatePerson(int id, PersonNameOnly person)
     {
         var result = _personService.UpdatePerson(id, person);
 
@@ -69,7 +70,7 @@ public class PersonController : ControllerBase
             return NotFound();
         }
 
-        return Ok(result);
+        return Ok(result.ToDto());
     }
 
     [HttpDelete("{id:int}")]
