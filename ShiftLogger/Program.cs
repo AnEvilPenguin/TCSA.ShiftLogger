@@ -2,8 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using ShiftLogger.Data;
 using ShiftLogger.Services;
 
-var builder = WebApplication.CreateBuilder(args);
-
 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
 
 var config = new ConfigurationBuilder()
@@ -11,7 +9,7 @@ var config = new ConfigurationBuilder()
     .AddJsonFile($"appsettings.{environment}.json", optional: true)
     .Build();
 
-
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
