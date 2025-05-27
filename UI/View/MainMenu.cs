@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Spectre.Console;
+using UI.Controllers;
 
 namespace UI.View;
 
@@ -12,9 +13,11 @@ enum MainMenuOptions
     Quit
 }
 
-public class MainMenu : AbstractMenu
+public class MainMenu(PersonController people) : AbstractMenu
 {
-    public void Run()
+    private PeopleMenu _people = new (people);
+    
+    public async Task Run()
     {
         MainMenuOptions? choice = null;
 
@@ -30,6 +33,7 @@ public class MainMenu : AbstractMenu
                     break;
                 
                 case MainMenuOptions.ManagePeople:
+                    await _people.Run();
                     break;
             }
         }

@@ -11,9 +11,4 @@
       <PackageReference Include="Spectre.Console" Version="0.50.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Controllers\" />
-      <Folder Include="Model\" />
-    </ItemGroup>
-
 </Project>

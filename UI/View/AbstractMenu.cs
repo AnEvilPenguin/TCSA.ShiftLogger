@@ -4,9 +4,9 @@ namespace UI.View;
 
 public abstract class AbstractMenu
 {
-    protected static T Prompt<T>() where T : struct, Enum =>
+    protected static T Prompt<T>(string title = "What would you like to do?") where T : struct, Enum =>
         AnsiConsole.Prompt(new SelectionPrompt<T>()
-            .Title("What would you like to do?")
+            .Title(title)
             .AddChoices(Enum.GetValues<T>())
             .UseConverter(GetEnumDisplayValue));
     
