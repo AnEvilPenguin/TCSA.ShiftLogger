@@ -4,6 +4,15 @@ using ShiftLogger.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+
+var config = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .AddJsonFile($"appsettings.{environment}.json", optional: true)
+    .Build();
+
+
+
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -11,7 +20,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ShiftsDbContext>(opt => 
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    opt.UseSqlServer(config.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
