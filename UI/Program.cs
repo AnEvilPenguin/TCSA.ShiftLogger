@@ -1,3 +1,18 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿
+using Spectre.Console;
+using UI.View;
 
-Console.WriteLine("Hello, World!");
+var mainMenu = new MainMenu();
+
+try
+{
+    mainMenu.Run();
+    return 0;
+}
+catch (Exception ex)
+{
+    AnsiConsole.MarkupLine("[darkred]Critical:");
+    AnsiConsole.WriteException(ex);
+    
+    return 1;
+}
