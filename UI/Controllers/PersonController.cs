@@ -38,4 +38,17 @@ public class PersonController(string baseUrl)
         
         return await response.Content.ReadFromJsonAsync<Person>();
     }
+
+    public async Task<string> DeletePerson(Person person)
+    {
+        var response = await _client.DeleteAsync($"Person/{person.Id}");
+        
+        await using Stream stream = await response.Content.ReadAsStreamAsync();
+        
+        using var reader = new StreamReader(stream);
+
+        var responseText = await reader.ReadToEndAsync();
+        
+        return responseText;
+    }
 }

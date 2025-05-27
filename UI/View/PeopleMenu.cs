@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.IO.Pipes;
 using Spectre.Console;
 using UI.Controllers;
 using UI.Model;
+using UI.Util;
 
 namespace UI.View;
 
@@ -10,6 +12,7 @@ enum PeopleMenuOptions
     List,
     Add,
     Update,
+    Delete,
     Back
 }
 
@@ -46,6 +49,10 @@ public class PeopleMenu (PersonController people) : AbstractMenu
                 case PeopleMenuOptions.Update:
                     await UpdatePerson();
                     break;
+                
+                case PeopleMenuOptions.Delete:
+                    await DeletePerson();
+                    break;
             }
         }
     }
@@ -78,6 +85,9 @@ public class PeopleMenu (PersonController people) : AbstractMenu
     {
         var person = await SelectPerson();
         
+        if  (person == null)
+            return;
+        
         PeopleView.ShowPerson(person, false);
         
         var choice = Prompt<UpdateOptions>("What would you like to update");
@@ -105,9 +115,32 @@ public class PeopleMenu (PersonController people) : AbstractMenu
             PeopleView.ShowPerson(updated);
     }
 
-    private async Task<Person> SelectPerson()
+    private async Task DeletePerson()
+    {
+        var person = await SelectPerson();
+        
+        if  (person == null)
+            return;
+
+        if (!AnsiConsole.Confirm($"Are you sure you want to [red]delete[/] {person.FirstName} {person.LastName}?"))
+            return;
+        
+        var response = await people.DeletePerson(person);
+        
+        AnsiConsole.Clear();
+        AnsiConsole.WriteLine(response);
+        Pause();
+    }
+
+    private async Task<Person?> SelectPerson()
     {
         var list = await people.ListPeople();
+
+        if (list.Count == 0)
+        {
+            NoPeople();
+            return null;
+        }
 
         var choice = AnsiConsole.Prompt(new SelectionPrompt<Person>()
             .Title("Select person")
@@ -115,5 +148,12 @@ public class PeopleMenu (PersonController people) : AbstractMenu
             .UseConverter(p => $"{p.FirstName} {p.LastName}"));
         
         return choice;
+    }
+
+    private void NoPeople()
+    {
+        AnsiConsole.Clear();
+        AnsiConsole.MarkupLine("[red]No people available.[/] Please add a person first.");
+        Pause();
     }
 }

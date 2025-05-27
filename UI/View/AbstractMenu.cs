@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Spectre.Console;
+using UI.Util;
+
 namespace UI.View;
 
 public abstract class AbstractMenu
@@ -20,4 +22,7 @@ public abstract class AbstractMenu
 
         return displayAttribute?.Name ?? enumValue.ToString();
     }
+    
+    protected static void Pause() =>
+        ViewHelpers.Pause();
 }
