@@ -40,7 +40,6 @@ public class PersonService : IPersonService
                 return null;
             }
         }
-            
 
         return _dbContext.People.Find(id);
     }

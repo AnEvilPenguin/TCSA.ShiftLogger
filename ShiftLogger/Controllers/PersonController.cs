@@ -22,9 +22,14 @@ public class PersonController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public ActionResult<Person> GetPersonById(int id)
+    public ActionResult<PersonDto> GetPersonById(int id)
     {
-        return Ok(_personService.GetPersonById(id));
+        var person = _personService.GetPersonById(id);
+        
+        if (person == null)
+            return NotFound();
+        
+        return Ok(person.ToDto());
     }
 
     [HttpGet("{id:int}/shifts")]
