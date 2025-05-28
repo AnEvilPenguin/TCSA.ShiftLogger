@@ -9,9 +9,13 @@ namespace UI.View;
 
 enum PeopleMenuOptions
 {
+    [Display(Name = "List People")]
     List,
+    [Display(Name = "Add Person")]
     Add,
+    [Display(Name = "Update Person")]
     Update,
+    [Display(Name = "Delete Person")]
     Delete,
     Back
 }
