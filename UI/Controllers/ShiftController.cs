@@ -12,7 +12,7 @@ public class ShiftController(string baseUrl)
 
     public async Task<List<Shift>> GetShifts(int personId)
     {
-        await using var stream = await _client.GetStreamAsync($"/Person/{personId}/shifts");
+        await using var stream = await _client.GetStreamAsync($"Person/{personId}/shifts");
         
         var person = await JsonSerializer.DeserializeAsync<PersonShiftDTO>(stream);
         
