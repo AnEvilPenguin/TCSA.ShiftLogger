@@ -13,7 +13,7 @@ enum MainMenuOptions
     Quit
 }
 
-public class MainMenu(PersonController personController) : AbstractMenu(personController)
+public class MainMenu(PersonController personController) : AbstractMenu()
 {
     private readonly PeopleMenu _people = new (personController);
     

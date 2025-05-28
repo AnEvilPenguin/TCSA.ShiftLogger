@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.IO.Pipes;
 using Spectre.Console;
 using UI.Controllers;
-using UI.Model;
-using UI.Util;
+using static UI.Util.ViewHelpers;
 
 namespace UI.View;
 
@@ -28,10 +26,8 @@ enum UpdateOptions
     Last
 }
 
-public class PeopleMenu (PersonController personController) : AbstractMenu (personController)
+public class PeopleMenu (PersonController personController) : AbstractMenu ()
 {
-    private readonly PersonController _personController = personController;
-
     public async Task Run()
     {
         PeopleMenuOptions? choice = null;
@@ -65,7 +61,7 @@ public class PeopleMenu (PersonController personController) : AbstractMenu (pers
     
     private async Task ListPeople()
     {
-        var list = await _personController.ListPeople();
+        var list = await personController.ListPeople();
         
         PeopleView.ListPeople(list);
     }
@@ -81,7 +77,7 @@ public class PeopleMenu (PersonController personController) : AbstractMenu (pers
         if (!AnsiConsole.Confirm("Is this correct?"))
             return;
         
-        var person = await _personController.AddPerson(firstName, lastName);
+        var person = await personController.AddPerson(firstName, lastName);
         
         if (person != null)
             PeopleView.ShowPerson(person);
@@ -89,7 +85,8 @@ public class PeopleMenu (PersonController personController) : AbstractMenu (pers
 
     private async Task UpdatePerson()
     {
-        var person = await SelectPerson();
+        var people = await personController.ListPeople();
+        var person = SelectPerson(people);
         
         if  (person == null)
             return;
@@ -115,7 +112,7 @@ public class PeopleMenu (PersonController personController) : AbstractMenu (pers
             _ => person with { LastName = change }
         };
         
-        var updated = await _personController.UpdatePerson(update);
+        var updated = await personController.UpdatePerson(update);
         
         if (updated != null)
             PeopleView.ShowPerson(updated);
@@ -123,7 +120,8 @@ public class PeopleMenu (PersonController personController) : AbstractMenu (pers
 
     private async Task DeletePerson()
     {
-        var person = await SelectPerson();
+        var people = await personController.ListPeople();
+        var person = SelectPerson(people);
         
         if  (person == null)
             return;
@@ -131,7 +129,7 @@ public class PeopleMenu (PersonController personController) : AbstractMenu (pers
         if (!AnsiConsole.Confirm($"Are you sure you want to [red]delete[/] {person.FirstName} {person.LastName}?"))
             return;
         
-        var response = await _personController.DeletePerson(person);
+        var response = await personController.DeletePerson(person);
         
         AnsiConsole.Clear();
         AnsiConsole.WriteLine(response);
