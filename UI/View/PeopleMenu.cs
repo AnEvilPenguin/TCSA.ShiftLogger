@@ -28,8 +28,10 @@ enum UpdateOptions
     Last
 }
 
-public class PeopleMenu (PersonController people) : AbstractMenu
+public class PeopleMenu (PersonController personController) : AbstractMenu (personController)
 {
+    private readonly PersonController _personController = personController;
+
     public async Task Run()
     {
         PeopleMenuOptions? choice = null;
@@ -63,7 +65,7 @@ public class PeopleMenu (PersonController people) : AbstractMenu
     
     private async Task ListPeople()
     {
-        var list = await people.ListPeople();
+        var list = await _personController.ListPeople();
         
         PeopleView.ListPeople(list);
     }
@@ -79,7 +81,7 @@ public class PeopleMenu (PersonController people) : AbstractMenu
         if (!AnsiConsole.Confirm("Is this correct?"))
             return;
         
-        var person = await people.AddPerson(firstName, lastName);
+        var person = await _personController.AddPerson(firstName, lastName);
         
         if (person != null)
             PeopleView.ShowPerson(person);
@@ -113,7 +115,7 @@ public class PeopleMenu (PersonController people) : AbstractMenu
             _ => person with { LastName = change }
         };
         
-        var updated = await people.UpdatePerson(update);
+        var updated = await _personController.UpdatePerson(update);
         
         if (updated != null)
             PeopleView.ShowPerson(updated);
@@ -129,35 +131,10 @@ public class PeopleMenu (PersonController people) : AbstractMenu
         if (!AnsiConsole.Confirm($"Are you sure you want to [red]delete[/] {person.FirstName} {person.LastName}?"))
             return;
         
-        var response = await people.DeletePerson(person);
+        var response = await _personController.DeletePerson(person);
         
         AnsiConsole.Clear();
         AnsiConsole.WriteLine(response);
-        Pause();
-    }
-
-    private async Task<Person?> SelectPerson()
-    {
-        var list = await people.ListPeople();
-
-        if (list.Count == 0)
-        {
-            NoPeople();
-            return null;
-        }
-
-        var choice = AnsiConsole.Prompt(new SelectionPrompt<Person>()
-            .Title("Select person")
-            .AddChoices(list)
-            .UseConverter(p => $"{p.FirstName} {p.LastName}"));
-        
-        return choice;
-    }
-
-    private void NoPeople()
-    {
-        AnsiConsole.Clear();
-        AnsiConsole.MarkupLine("[red]No people available.[/] Please add a person first.");
         Pause();
     }
 }

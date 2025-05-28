@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Spectre.Console;
+using UI.Controllers;
+using UI.Model;
 using UI.Util;
 
 namespace UI.View;
 
-public abstract class AbstractMenu
+public abstract class AbstractMenu (PersonController personController)
 {
     protected static T Prompt<T>(string title = "What would you like to do?") where T : struct, Enum =>
         AnsiConsole.Prompt(new SelectionPrompt<T>()
@@ -25,4 +27,29 @@ public abstract class AbstractMenu
     
     protected static void Pause() =>
         ViewHelpers.Pause();
+    
+    protected async Task<Person?> SelectPerson()
+    {
+        var list = await personController.ListPeople();
+
+        if (list.Count == 0)
+        {
+            NoPeople();
+            return null;
+        }
+
+        var choice = AnsiConsole.Prompt(new SelectionPrompt<Person>()
+            .Title("Select person")
+            .AddChoices(list)
+            .UseConverter(p => $"{p.FirstName} {p.LastName}"));
+        
+        return choice;
+    }
+    
+    private void NoPeople()
+    {
+        AnsiConsole.Clear();
+        AnsiConsole.MarkupLine("[red]No people available.[/] Please add a person first.");
+        Pause();
+    }
 }

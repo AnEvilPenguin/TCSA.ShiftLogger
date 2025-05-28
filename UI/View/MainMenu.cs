@@ -13,9 +13,9 @@ enum MainMenuOptions
     Quit
 }
 
-public class MainMenu(PersonController people) : AbstractMenu
+public class MainMenu(PersonController personController) : AbstractMenu(personController)
 {
-    private PeopleMenu _people = new (people);
+    private readonly PeopleMenu _people = new (personController);
     
     public async Task Run()
     {
