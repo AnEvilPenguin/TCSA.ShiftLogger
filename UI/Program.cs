@@ -1,10 +1,10 @@
-﻿
-using Spectre.Console;
+﻿using Spectre.Console;
 using UI.Controllers;
 using UI.View;
 
 var baseUrl = "http://localhost:5003/api/";
 var peopleApi = new PersonController(baseUrl);
+var shiftApi = new ShiftController(baseUrl);
 
 var mainMenu = new MainMenu(peopleApi);
 
