@@ -9,5 +9,12 @@ public class Shift
     [JsonPropertyName("start")]
     public required DateTime Start { get; init; }
     [JsonPropertyName("end")]
-    public DateTime? End { get; init; }
+    public required DateTime End { get; init; }
+    
+    public string GetDuration()
+    {
+        var duration = End - Start;
+        
+        return duration.ToString(@"d\ \-\ hh\:mm\:ss");
+    }
 }

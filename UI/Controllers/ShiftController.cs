@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http.Json;
+using System.Text.Json;
 using UI.Model;
 
 namespace UI.Controllers;
@@ -20,5 +21,21 @@ public class ShiftController(string baseUrl)
             return new List<Shift>();
         
         return person.Shifts;
+    }
+    
+    public async Task<Shift?> AddShift(int personId, DateTime start, DateTime end)
+    {
+        var content = new
+        {
+            personId,
+            start = start.ToString("s"),
+            end = end.ToString("s"),
+        };
+        
+        var response = await _client.PostAsJsonAsync("Shift", content);
+        
+        var shift = await response.Content.ReadFromJsonAsync<Shift>();
+        
+        return shift;
     }
 }

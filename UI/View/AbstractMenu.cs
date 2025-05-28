@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Spectre.Console;
-using UI.Controllers;
-using UI.Model;
 using UI.Util;
 
 namespace UI.View;
@@ -14,7 +12,7 @@ public abstract class AbstractMenu ()
             .AddChoices(Enum.GetValues<T>())
             .UseConverter(GetEnumDisplayValue));
     
-    private static string GetEnumDisplayValue<T>(T enumValue) where T : Enum
+    protected static string GetEnumDisplayValue<T>(T enumValue) where T : Enum
     {
         var displayAttribute = enumValue
             .GetType()

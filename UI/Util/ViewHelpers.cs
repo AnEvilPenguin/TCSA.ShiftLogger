@@ -27,6 +27,12 @@ public static class ViewHelpers
         return choice;
     }
     
+    public static void WriteDivider(string text)
+    {
+        AnsiConsole.WriteLine();
+        AnsiConsole.Write(new Rule($"[yellow]{text}[/]").RuleStyle("grey").LeftJustified());
+    }
+    
     private static void NoPeople()
     {
         AnsiConsole.Clear();

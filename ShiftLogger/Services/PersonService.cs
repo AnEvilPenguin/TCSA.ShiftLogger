@@ -35,7 +35,7 @@ public class PersonService : IPersonService
                     .Include(p => p.Shifts)
                     .Single(p => p.Id == id);
             }
-            catch (Exception e)
+            catch
             {
                 return null;
             }

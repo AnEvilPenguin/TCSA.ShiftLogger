@@ -13,9 +13,10 @@ enum MainMenuOptions
     Quit
 }
 
-public class MainMenu(PersonController personController) : AbstractMenu()
+public class MainMenu(PersonController personController, ShiftController shiftController) : AbstractMenu()
 {
     private readonly PeopleMenu _people = new (personController);
+    private readonly ShiftMenu _shifts = new  (personController, shiftController);
     
     public async Task Run()
     {
@@ -30,6 +31,7 @@ public class MainMenu(PersonController personController) : AbstractMenu()
             switch (choice)
             {
                 case MainMenuOptions.ManageShifts:
+                    await _shifts.Run();
                     break;
                 
                 case MainMenuOptions.ManagePeople:

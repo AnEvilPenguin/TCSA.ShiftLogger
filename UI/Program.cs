@@ -6,7 +6,7 @@ var baseUrl = "http://localhost:5003/api/";
 var peopleApi = new PersonController(baseUrl);
 var shiftApi = new ShiftController(baseUrl);
 
-var mainMenu = new MainMenu(peopleApi);
+var mainMenu = new MainMenu(peopleApi, shiftApi);
 
 try
 {
