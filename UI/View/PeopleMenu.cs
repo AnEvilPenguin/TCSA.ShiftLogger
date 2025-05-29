@@ -130,6 +130,13 @@ public class PeopleMenu (PersonController personController) : AbstractMenu ()
             return;
         
         var response = await personController.DeletePerson(person);
+
+        if (response == null)
+        {
+            AnsiConsole.MarkupLine("[bold red]Could not delete person[/]");
+            Pause();
+            return;
+        }
         
         AnsiConsole.Clear();
         AnsiConsole.WriteLine(response);
