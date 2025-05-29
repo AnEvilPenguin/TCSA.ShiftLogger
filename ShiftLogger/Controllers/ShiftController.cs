@@ -50,7 +50,7 @@ public class ShiftController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult<Shift> UpdateShift(int id, ShiftCreate shift)
+    public ActionResult<Shift> UpdateShift(int id, ShiftUpdate shift)
     {
         try
         {
@@ -61,7 +61,7 @@ public class ShiftController : ControllerBase
             
             return Ok(savedShift.ToDto());
         }
-        catch
+        catch (Exception ex)
         {
             return BadRequest();
         }

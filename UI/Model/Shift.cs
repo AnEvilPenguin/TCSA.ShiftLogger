@@ -2,7 +2,7 @@
 
 namespace UI.Model;
 
-public class Shift
+public record Shift
 {
     [JsonPropertyName("id")]
     public int Id { get; set; }
@@ -10,6 +10,8 @@ public class Shift
     public required DateTime Start { get; init; }
     [JsonPropertyName("end")]
     public required DateTime End { get; init; }
+    [JsonPropertyName("personId")]
+    public int PersonId { get; init; }
     
     public string GetDuration()
     {

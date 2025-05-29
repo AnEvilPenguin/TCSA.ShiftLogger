@@ -8,7 +8,7 @@ public interface IShiftService
     public List<Shift> GetShifts();
     public Shift? GetShiftById(int id);
     public Shift CreateShift(Shift shift);
-    public Shift? UpdateShift(int id, ShiftCreate shift);
+    public Shift? UpdateShift(int id, ShiftUpdate shift);
     public string? DeleteShift(int id);
 }
 
@@ -34,7 +34,7 @@ public class ShiftService : IShiftService
         return savedShift.Entity;
     }
 
-    public Shift? UpdateShift(int id, ShiftCreate shift)
+    public Shift? UpdateShift(int id, ShiftUpdate shift)
     {
         Shift? savedShift = GetShiftById(id);
 

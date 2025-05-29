@@ -2,7 +2,7 @@
 
 namespace UI.Model;
 
-public class PersonShiftDTO
+public record PersonShiftDto
 {
     [JsonPropertyName("id")]
     public int Id { get; set; }

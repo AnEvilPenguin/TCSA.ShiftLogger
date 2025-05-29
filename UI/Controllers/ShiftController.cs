@@ -15,7 +15,7 @@ public class ShiftController(string baseUrl)
     {
         await using var stream = await _client.GetStreamAsync($"Person/{personId}/shifts");
         
-        var person = await JsonSerializer.DeserializeAsync<PersonShiftDTO>(stream);
+        var person = await JsonSerializer.DeserializeAsync<PersonShiftDto>(stream);
         
         if (person == null)
             return new List<Shift>();
@@ -46,6 +46,27 @@ public class ShiftController(string baseUrl)
             var response = await _client.DeleteAsync($"Shift/{shift.Id}");
 
             return await response.Content.ReadAsStringAsync();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public async Task<Shift?> UpdateShift(Shift shift)
+    {
+        var content = new
+        {
+            start = shift.Start.ToString("s"),
+            end = shift.End.ToString("s"),
+            personId = shift.PersonId,
+        };
+        
+        try
+        {
+            var response = await _client.PutAsJsonAsync($"Shift/{shift.Id}", content);
+
+            return await response.Content.ReadFromJsonAsync<Shift>();
         }
         catch
         {
