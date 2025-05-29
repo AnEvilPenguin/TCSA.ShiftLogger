@@ -38,4 +38,18 @@ public class ShiftController(string baseUrl)
         
         return shift;
     }
+
+    public async Task<string?> RemoveShift(Shift shift)
+    {
+        try
+        {
+            var response = await _client.DeleteAsync($"Shift/{shift.Id}");
+
+            return await response.Content.ReadAsStringAsync();
+        }
+        catch
+        {
+            return null;
+        }
+    }
 }

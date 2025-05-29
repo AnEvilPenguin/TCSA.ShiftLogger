@@ -16,6 +16,8 @@ enum ShiftMenuOptions
     ListShifts,
     [Display(Name = "Create Shift")]
     AddShift,
+    [Display(Name = "Delete Shift")]
+    DeleteShift,
     Back
 }
 
@@ -50,6 +52,10 @@ public class ShiftMenu(PersonController personController, ShiftController shiftC
                 
                 case ShiftMenuOptions.AddShift:
                     await CreateShift();
+                    break;
+                
+                case ShiftMenuOptions.DeleteShift:
+                    await DeleteShift();
                     break;
             }
         }
@@ -95,6 +101,7 @@ public class ShiftMenu(PersonController personController, ShiftController shiftC
                     if (date < start)
                         return ValidationResult.Error("[red]Shift end cannot be before start[/]");
 
+                    // Sweatshop conditions are fine.
                     return ValidationResult.Success();
                 }));
         
@@ -111,5 +118,39 @@ public class ShiftMenu(PersonController personController, ShiftController shiftC
         
         ShowShift(_selectedPerson, shift);
     }
+     
+    private async Task DeleteShift()
+    {
+        if (_selectedPerson == null)
+            return;
         
+        var shifts = await shiftController.GetShifts(_selectedPerson.Id);
+        
+        if  (shifts.Count == 0)
+        {
+            AnsiConsole.Markup("[red]Nothing to remove[/]");
+            return;
+        }
+
+        var shift = AnsiConsole.Prompt(
+            new SelectionPrompt<Shift>()
+                .Title("Which shift would you like to delete?")
+                .AddChoices(shifts)
+                .UseConverter(s => $"start: {s.Start:g}, end: {s.End:g}"));
+        
+        if (!AnsiConsole.Confirm("Are you sure you want to delete this shift?"))
+            return;
+        
+        var response = await shiftController.RemoveShift(shift);
+        
+        if (response == null)
+        {
+            AnsiConsole.Markup("[red]Failed to remove shift.[/] It may have already been removed.");
+            return;
+        }
+
+        AnsiConsole.WriteLine(response);
+        
+        Pause();
+    }
 }
